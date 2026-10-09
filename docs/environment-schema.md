@@ -49,7 +49,7 @@ flowchart LR
 | Сервис | Образ или сборка | Порты `хост:контейнер` | Переменные окружения (только имена, без значений) | Тома | Зависит от (условие) | Healthcheck |
 |---|---|---|---|---|---|---|
 | `app` | `build: .` (Dockerfile на базе `python:3.14-slim`) | `${APP_PORT:-8000}:8000` — браузер и `curl` разработчика | `DATABASE_URL` | — | `db` (`service_healthy`) | — (появится позже) |
-| `db` | `postgres:16` | `5432:5432` — подключаться к базе из IDE (DBeaver) | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | `pgdata:/var/lib/postgresql/data` (именованный) | — | `pg_isready -U postgres`, каждые 5 с, 5 попыток |
+| `db` | `postgres:16` | `5432:5432` — подключаться к базе из IDE (DBeaver) | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` (база `repair_requests`) | `pgdata:/var/lib/postgresql/data` (именованный) | — | `pg_isready -U postgres -d repair_requests`, каждые 5 с, 10 попыток, `start_period` 30 с |
 
 Если сервисов больше двух (например, Redis), для каждого дополнительного укажите одной фразой, зачем он нужен именно сейчас.
 
@@ -131,7 +131,9 @@ flowchart LR
 
 | Замечание или рекомендация | Что изменили, почему не согласны или учтёте ли рекомендацию |
 |---|---|
-| | |
+| Замечание 1: мало попыток healthcheck, нет `start_period` | Учли: 10 попыток и `start_period` 30 с, в `pg_isready` добавили `-d repair_requests` |
+| Холодное чтение: имя базы только в вопросе 1 | Учли: имя базы `repair_requests` добавлено в колонку переменных `db` |
+| Рекомендация: порт 5432 занят локальным PostgreSQL | Учтём на практике №3: опубликуем 5432 через переменную или уберём публикацию, если IDE не понадобится |
 
 ## 6. После воркшопа
 
