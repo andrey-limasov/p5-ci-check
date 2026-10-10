@@ -34,3 +34,11 @@
   - `GET /tickets/{id}` — одна заявка
   - `PUT /tickets/{id}` — изменить заявку (статус, исполнитель)
   - `DELETE /tickets/{id}` — удалить заявку
+
+## API
+
+| Метод и путь | Ответ | Назначение |
+|---|---|---|
+| `GET /` | `{"message": "Hello World"}` | Проверка, что приложение отвечает |
+| `GET /health` | `{"status": "healthy"}` | Health-check: приложение живо |
+| `GET /docs` | Страница Swagger UI | Документация API, FastAPI генерирует её автоматически |
