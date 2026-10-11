@@ -41,4 +41,5 @@
 |---|---|---|
 | `GET /` | `{"message": "Hello World"}` | Проверка, что приложение отвечает |
 | `GET /health` | `{"status": "healthy"}` | Health-check: приложение живо |
+| `GET /version` | `{"version": "0.2.0", "team": "repair-requests"}` | Версия приложения и команда-владелец. Пример: `curl http://localhost:8000/version` |
 | `GET /docs` | Страница Swagger UI | Документация API, FastAPI генерирует её автоматически |
