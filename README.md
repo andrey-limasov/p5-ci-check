@@ -40,6 +40,10 @@
 
 3. Проверить — во втором окне терминала или в браузере: `http://localhost:8000/health` отвечает `{"status":"healthy","database":"ok"}`.
 
+   ```bash
+   curl http://localhost:8000/health        # Windows PowerShell: curl.exe http://localhost:8000/health
+   ```
+
 Порт 8000 занят — задайте в `.env` `APP_PORT=8001` и проверяйте `http://localhost:8001/health`.
 
 Остановить: `Ctrl+C` или `docker compose down`. Удалить вместе с данными базы: `docker compose down -v`.
