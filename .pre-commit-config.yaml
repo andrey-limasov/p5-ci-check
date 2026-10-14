@@ -1,0 +1,23 @@
+# Проверки перед каждым коммитом. Установка в клон: pre-commit install
+minimum_pre_commit_version: "4.0.0"
+
+repos:
+  # Базовые проверки файлов
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files   # файлы больше 500 КБ
+      - id: check-merge-conflict      # забытые маркеры <<<<<<< и >>>>>>>
+      - id: check-yaml                # синтаксис compose.yaml и других YAML
+      - id: detect-private-key        # закрытые ключи SSH и TLS
+      - id: end-of-file-fixer         # перевод строки в конце файла
+
+  # Сканер секретов из ADR 003: проверяет то, что вы добавили в коммит
+  - repo: local
+    hooks:
+      - id: gitleaks
+        name: gitleaks (secrets)
+        language: docker_image
+        # -e ...: git в контейнере доверяет папке проекта при любой ОС и любом владельце файлов
+        entry: -e GIT_CONFIG_COUNT=1 -e GIT_CONFIG_KEY_0=safe.directory -e GIT_CONFIG_VALUE_0=* zricethezav/gitleaks:v8.28.0 git --pre-commit --redact --staged --verbose --no-banner --no-color
+        pass_filenames: false
