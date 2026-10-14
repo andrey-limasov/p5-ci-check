@@ -10,6 +10,10 @@ app = FastAPI(
     title="Project Name",
     description="Project description",
     version="0.2.0",
+    # Документация API — только в dev
+    docs_url="/docs" if settings.app_env == "dev" else None,
+    redoc_url="/redoc" if settings.app_env == "dev" else None,
+    openapi_url="/openapi.json" if settings.app_env == "dev" else None,
 )
 
 TEAM_NAME = "repair-requests"
