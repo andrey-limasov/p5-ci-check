@@ -46,16 +46,24 @@
 
 Порт 8000 занят — задайте в `.env` `APP_PORT=8001` и проверяйте `http://localhost:8001/health`.
 
+Режим `prod` (без `/docs`): `APP_ENV=prod` в `.env` и `docker compose up -d`.
+
 Остановить: `Ctrl+C` или `docker compose down`. Удалить вместе с данными базы: `docker compose down -v`.
 
 ## Локальная разработка без Docker
 
-```bash
-uv sync
-uv run uvicorn main:app --reload
-```
+Приложение проверяет настройки при старте: без `DATABASE_URL` оно не запускается и пишет `database_url Field required`.
 
-Базы в этом режиме нет: `/` отвечает `200`, `/health` — `503` с `"DATABASE_URL is not set"`. Так и должно быть.
+1. Поднять только базу: `docker compose up -d db`
+2. Скопировать из `.env.example` в `.env` строку `# DATABASE_URL=...localhost...` и убрать `#` в её начале
+3. Запустить:
+
+   ```bash
+   uv sync
+   uv run uvicorn main:app --reload
+   ```
+
+`http://localhost:8000/health` отвечает `{"status":"healthy","database":"ok"}`.
 
 ## Предметная область
 
