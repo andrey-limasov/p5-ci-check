@@ -83,4 +83,4 @@
 | `GET /` | `{"message": "Hello World"}` | Проверка, что приложение отвечает |
 | `GET /health` | `{"status": "healthy", "database": "ok"}`; база недоступна — `503` | Health-check: приложение живо и база данных отвечает |
 | `GET /version` | `{"version": "0.2.0", "team": "repair-requests"}` | Версия приложения и команда-владелец. Пример: `curl http://localhost:8000/version` |
-| `GET /docs` | Страница Swagger UI | Документация API, FastAPI генерирует её автоматически |
+| `GET /docs` | Страница Swagger UI; при `APP_ENV=prod` — `404` | Документация API, FastAPI генерирует её автоматически; только при `APP_ENV=dev` |
