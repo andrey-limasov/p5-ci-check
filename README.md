@@ -46,16 +46,24 @@
 
 Порт 8000 занят — задайте в `.env` `APP_PORT=8001` и проверяйте `http://localhost:8001/health`.
 
+Режим `prod` (без `/docs`): `APP_ENV=prod` в `.env` и `docker compose up -d`.
+
 Остановить: `Ctrl+C` или `docker compose down`. Удалить вместе с данными базы: `docker compose down -v`.
 
 ## Локальная разработка без Docker
 
-```bash
-uv sync
-uv run uvicorn main:app --reload
-```
+Приложение проверяет настройки при старте: без `DATABASE_URL` оно не запускается и пишет `database_url Field required`.
 
-Базы в этом режиме нет: `/` отвечает `200`, `/health` — `503` с `"DATABASE_URL is not set"`. Так и должно быть.
+1. Поднять только базу: `docker compose up -d db`
+2. Скопировать из `.env.example` в `.env` строку `# DATABASE_URL=...localhost...` и убрать `#` в её начале
+3. Запустить:
+
+   ```bash
+   uv sync
+   uv run uvicorn main:app --reload
+   ```
+
+`http://localhost:8000/health` отвечает `{"status":"healthy","database":"ok"}`.
 
 ## Предметная область
 
@@ -75,4 +83,4 @@ uv run uvicorn main:app --reload
 | `GET /` | `{"message": "Hello World"}` | Проверка, что приложение отвечает |
 | `GET /health` | `{"status": "healthy", "database": "ok"}`; база недоступна — `503` | Health-check: приложение живо и база данных отвечает |
 | `GET /version` | `{"version": "0.2.0", "team": "repair-requests"}` | Версия приложения и команда-владелец. Пример: `curl http://localhost:8000/version` |
-| `GET /docs` | Страница Swagger UI | Документация API, FastAPI генерирует её автоматически |
+| `GET /docs` | Страница Swagger UI; при `APP_ENV=prod` — `404` | Документация API, FastAPI генерирует её автоматически; только при `APP_ENV=dev` |

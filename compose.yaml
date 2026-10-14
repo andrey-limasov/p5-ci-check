@@ -4,6 +4,7 @@ services:
     ports:
       - "${APP_PORT:-8000}:8000"
     environment:
+      APP_ENV: ${APP_ENV:-dev}
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/repair_requests
     depends_on:
       db:
