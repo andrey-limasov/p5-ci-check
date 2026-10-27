@@ -16,6 +16,7 @@
 # «Secure use reference» → «Using third-party actions».
 
 name: CI
+# Проба: push изменения workflow токеном без права workflow.
 
 on:
   pull_request:
