@@ -4,16 +4,16 @@ import psycopg
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from settings import settings
+import settings
 
 app = FastAPI(
     title="Project Name",
     description="Project description",
-    version="0.2.0",
+    version="0.3.0",
     # Документация API — только в dev
-    docs_url="/docs" if settings.app_env == "dev" else None,
-    redoc_url="/redoc" if settings.app_env == "dev" else None,
-    openapi_url="/openapi.json" if settings.app_env == "dev" else None,
+    docs_url="/docs" if settings.APP_ENV == "dev" else None,
+    redoc_url="/redoc" if settings.APP_ENV == "dev" else None,
+    openapi_url="/openapi.json" if settings.APP_ENV == "dev" else None,
 )
 
 TEAM_NAME = "repair-requests"
@@ -22,7 +22,7 @@ logger = logging.getLogger("uvicorn.error")
 
 @app.get("/")
 async def root():
-    """Root endpoint."""
+    """Root endpoint: проверка, что приложение отвечает."""
     return {"message": "Hello World"}
 
 
@@ -31,7 +31,7 @@ def health_check():
     """Приложение работает и база данных отвечает на запрос."""
     try:
         with psycopg.connect(
-            settings.database_url, connect_timeout=settings.db_connect_timeout
+            settings.DATABASE_URL, connect_timeout=settings.DB_CONNECT_TIMEOUT
         ) as conn:
             conn.execute("SELECT 1")
     except psycopg.Error as exc:

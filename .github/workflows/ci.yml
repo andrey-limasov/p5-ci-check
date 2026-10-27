@@ -39,22 +39,25 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # --- Вариант uv (по умолчанию) ---
-      # Версию Python uv берёт из .python-version.
-      # У setup-uv нет тега major-версии — указана полная версия.
-      - uses: astral-sh/setup-uv@v10.3.0
+      - name: Install Poetry
+        run: pipx install poetry==2.5.1
+
+      - uses: actions/setup-python@v7     # после установки Poetry: иначе cache: poetry не работает
+        with:
+          python-version: "3.14"
+          cache: poetry
 
       - name: Install dependencies
-        run: uv sync --locked         # --locked: падает, если uv.lock не совпадает с pyproject.toml
+        run: poetry install --no-interaction
 
       - name: ruff check
-        run: uv run ruff check .
+        run: poetry run ruff check .
 
       - name: ruff format --check
-        run: uv run ruff format --check .   # аналог black: только проверка, файлы не меняет
+        run: poetry run ruff format --check .
 
       - name: mypy
-        run: uv run mypy .
+        run: poetry run mypy .
 
   # ---------------------------------------------------------------------------
   # secrets — сканер секретов по файлам ветки (DoD 1 и 2: секреты не коммитятся).

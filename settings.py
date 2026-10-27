@@ -1,30 +1,19 @@
-"""Все параметры конфигурации приложения — в одном месте.
+"""Все параметры конфигурации приложения — в одном месте."""
+from dotenv import load_dotenv
 
-Значения берутся из переменных окружения, при локальном запуске — ещё и из файла .env.
-Переменная окружения побеждает значение из .env.
-"""
+load_dotenv()   # не перезаписывает переменные, уже заданные в окружении
 
-from typing import Literal
+import os
+import sys
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+REQUIRED = ("DATABASE_URL",)
+missing = [name for name in REQUIRED if not os.environ.get(name)]
+if missing:
+    sys.exit(f"Не заданы обязательные переменные окружения: {', '.join(missing)}")
 
+APP_ENV = os.environ.get("APP_ENV", "dev")
+if APP_ENV not in ("dev", "prod"):
+    sys.exit(f"APP_ENV должна быть dev или prod, получено: {APP_ENV}")
 
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env",  # при запуске без Docker; в контейнере .env нет (.dockerignore)
-        extra="ignore",  # в .env лежат и переменные Compose: POSTGRES_PASSWORD, APP_PORT
-        hide_input_in_errors=True,  # не выводить значения (в том числе пароли) в сообщение об ошибке
-    )
-
-    # Окружение: dev — ноутбук разработчика, prod — сервер
-    app_env: Literal["dev", "prod"] = "dev"
-
-    # Секрет: без значения по умолчанию, пустая строка не принимается
-    database_url: str = Field(min_length=1)
-
-    # Несекретные параметры — с умолчанием
-    db_connect_timeout: int = 3
-
-
-settings = Settings()
+DATABASE_URL = os.environ["DATABASE_URL"]
+DB_CONNECT_TIMEOUT = int(os.environ.get("DB_CONNECT_TIMEOUT", "3"))
